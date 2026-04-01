@@ -1,4 +1,7 @@
+'use client';
+
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -58,6 +61,29 @@ export default function Home() {
           >
             Documentation
           </a>
+        </div>
+
+        {/* [테스트용] 마이페이지 이동 버튼 */}
+        <div style={{ marginTop: '2rem', padding: '1rem', border: '2px dashed #f59e0b', borderRadius: '8px', background: '#fffbeb' }}>
+          <p style={{ fontSize: '0.75rem', color: '#92400e', marginBottom: '0.5rem', fontWeight: 600 }}>
+            🧪 TEST ONLY — 삭제 예정
+          </p>
+          <Link
+            id="test-mypage-btn"
+            href="/mypage"
+            style={{
+              display: 'inline-block',
+              padding: '0.5rem 1.2rem',
+              background: '#f59e0b',
+              color: '#fff',
+              borderRadius: '6px',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              textDecoration: 'none',
+            }}
+          >
+            → 마이페이지 이동 (테스트)
+          </Link>
         </div>
       </main>
     </div>

@@ -1,26 +1,334 @@
 @import "tailwindcss";
 
+/* =============================================
+   두과자 (DOGWAJA) 디자인 시스템
+   컨셉: 제빵소 종이 메뉴판 / 아이보리 메인
+   requirements.md 디자인 규칙 기준
+   ============================================= */
+
+@font-face {
+  font-family: 'GowunBatang';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Regular.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GowunBatang';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Bold.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 메인 아이보리 팔레트 */
+  --ivory-50:  #fdfbf7;
+  --ivory-100: #f8f3e8;
+  --ivory-200: #f0e8d4;
+  --ivory-300: #e4d5b7;
+  --ivory-400: #d4bc93;
+  --ivory-500: #c4a372;
+
+  /* 브라운 팔레트 */
+  --brown-100: #e8d5c0;
+  --brown-300: #b8926a;
+  --brown-500: #8b6347;
+  --brown-700: #5c3d2e;
+  --brown-900: #2d1a0e;
+
+  /* 텍스트 */
+  --text-primary: #2d1a0e;
+  --text-secondary: #6b4c39;
+  --text-muted: #9c7a6a;
+
+  /* 배경 */
+  --bg-page: var(--ivory-100);
+  --bg-card: var(--ivory-50);
+
+  /* 강조 */
+  --accent: #c4a372;
+  --accent-hover: #b8926a;
+  --error: #c0392b;
+  --success: #27ae60;
+
+  /* 폰트 */
+  --font-heading: 'GowunBatang', serif;
+  --font-body: 'GowunBatang', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---- 기본 리셋 ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 종이 질감 배경 ---- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- 공통 유틸 ---- */
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--brown-100);
+  border-radius: 4px;
+  padding: 2.5rem 2.8rem;
+  box-shadow:
+    0 2px 8px rgba(45, 26, 14, 0.08),
+    0 0 0 1px rgba(180, 140, 100, 0.06),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  position: relative;
+}
+
+/* 카드 상단 장식선 */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: var(--brown-100);
+  opacity: 0.6;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: var(--brown-100);
+  opacity: 0.6;
+}
+
+/* ---- 타이포 ---- */
+.heading-logo {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--brown-700);
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.heading-sub {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 0.2rem;
+  letter-spacing: 0.12em;
+}
+
+/* ---- 폼 요소 ---- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--brown-100);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.7);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(196, 163, 114, 0.15);
+  background: rgba(255,255,255,0.9);
+}
+
+.form-error {
+  font-size: 0.78rem;
+  color: var(--error);
+  margin-top: 0.2rem;
+}
+
+/* ---- 버튼 ---- */
+.btn-primary {
+  width: 100%;
+  padding: 0.72rem 1.5rem;
+  background: var(--brown-700);
+  color: var(--ivory-100);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--brown-500);
+  box-shadow: 0 2px 8px rgba(45, 26, 14, 0.2);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--brown-300);
+  color: var(--brown-500);
+  padding: 0.65rem 1.5rem;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-ghost:hover {
+  background: var(--brown-100);
+  color: var(--brown-700);
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1.5px solid var(--error);
+  color: var(--error);
+  padding: 0.65rem 1.5rem;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-danger:hover {
+  background: var(--error);
+  color: #fff;
+}
+
+/* ---- 링크 ---- */
+.link {
+  color: var(--brown-500);
+  text-decoration: underline;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--brown-700);
+}
+
+/* ---- 알림 메시지 ---- */
+.alert {
+  padding: 0.7rem 1rem;
+  border-radius: 3px;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.25);
+  color: var(--error);
+}
+
+.alert-success {
+  background: rgba(39, 174, 96, 0.08);
+  border: 1px solid rgba(39, 174, 96, 0.25);
+  color: var(--success);
+}
+
+/* ---- 구분선 ---- */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--brown-100);
+}
+
+/* ---- 섹션 구분 ---- */
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--brown-700);
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px dashed var(--brown-100);
+}
+
+/* ---- 반응형 ---- */
+@media (max-width: 480px) {
+  .card {
+    padding: 1.8rem 1.4rem;
+  }
+  .heading-logo {
+    font-size: 1.6rem;
+  }
 }
