@@ -66,7 +66,7 @@ export default function LoginPage() {
         {/* 헤더 */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 className="heading-logo">🍪 두과자</h1>
-          <p className="heading-sub">우리 방 과자 공유 서비스</p>
+          <p className="heading-sub">우리 반 간식 공유 서비스</p>
         </div>
 
         {/* 회원가입 성공 메시지 */}

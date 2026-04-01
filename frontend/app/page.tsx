@@ -37,7 +37,7 @@ export default function HomePage() {
   const { accessToken, user, setAuth, setAccessToken, clearAuth } = useAuthStore();
 
   const [initialized, setInitialized] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabType>('RECOMMEND');
+  const [activeTab, setActiveTab] = useState<TabType>('BOUGHT');
 
   // 추천글 상태
   const [recommendations, setRecommendations] = useState<RecommendationListItemDTO[]>([]);
@@ -214,6 +214,11 @@ export default function HomePage() {
                 {user.nickname} {isAdmin && '(관리자)'}
               </span>
             )}
+            {isAdmin && (
+              <Link href="/admin" style={{ fontSize: '0.82rem', color: 'var(--error)', textDecoration: 'underline' }}>
+                관리자 페이지
+              </Link>
+            )}
             <Link href="/mypage" style={{ fontSize: '0.82rem', color: 'var(--brown-500)', textDecoration: 'underline' }}>
               마이페이지
             </Link>
@@ -243,18 +248,6 @@ export default function HomePage() {
         {/* 탭 네비게이션 */}
         <div style={{ display: 'flex', gap: '1rem', borderBottom: '2px solid var(--brown-100)', marginBottom: '1.5rem' }}>
           <button
-            onClick={() => setActiveTab('RECOMMEND')}
-            style={{
-              padding: '0.5rem 1rem', background: 'none', cursor: 'pointer',
-              border: 'none', borderBottom: activeTab === 'RECOMMEND' ? '2px solid var(--brown-700)' : 'none',
-              color: activeTab === 'RECOMMEND' ? 'var(--brown-700)' : 'var(--text-muted)',
-              fontWeight: activeTab === 'RECOMMEND' ? 700 : 400,
-              fontSize: '1.05rem', marginBottom: '-2px'
-            }}
-          >
-            추천 게시글
-          </button>
-          <button
             onClick={() => setActiveTab('BOUGHT')}
             style={{
               padding: '0.5rem 1rem', background: 'none', cursor: 'pointer',
@@ -264,7 +257,19 @@ export default function HomePage() {
               fontSize: '1.05rem', marginBottom: '-2px'
             }}
           >
-            구매 리스트
+            구매 현황
+          </button>
+          <button
+            onClick={() => setActiveTab('RECOMMEND')}
+            style={{
+              padding: '0.5rem 1rem', background: 'none', cursor: 'pointer',
+              border: 'none', borderBottom: activeTab === 'RECOMMEND' ? '2px solid var(--brown-700)' : 'none',
+              color: activeTab === 'RECOMMEND' ? 'var(--brown-700)' : 'var(--text-muted)',
+              fontWeight: activeTab === 'RECOMMEND' ? 700 : 400,
+              fontSize: '1.05rem', marginBottom: '-2px'
+            }}
+          >
+            간식 추천
           </button>
         </div>
 
@@ -364,18 +369,18 @@ export default function HomePage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                       <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--brown-700)', margin: 0 }}>{bs.name}</h2>
-                      <span style={{ 
+                      <span style={{
                         fontSize: '0.75rem', fontWeight: 600, padding: '0.2rem 0.5rem', borderRadius: '12px',
                         background: bs.status === 'SHIPPING' ? '#fdebd0' : bs.status === 'OUT_OF_STOCK' ? '#fadbd8' : '#d5f5e3',
                         color: bs.status === 'SHIPPING' ? '#d68910' : bs.status === 'OUT_OF_STOCK' ? '#c0392b' : '#27ae60'
-                       }}>
+                      }}>
                         {bs.statusLabel}
                       </span>
                     </div>
 
                     <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                      <select 
-                        value={bs.status} 
+                      <select
+                        value={bs.status}
                         onChange={(e) => handleBsStatusChange(bs.bsId, e.target.value)}
                         style={{ fontSize: '0.75rem', padding: '0.1rem', marginRight: '0.4rem', borderRadius: '3px', border: '1px solid var(--brown-200)', background: 'white' }}
                       >

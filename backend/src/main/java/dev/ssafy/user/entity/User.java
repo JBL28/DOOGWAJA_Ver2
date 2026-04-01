@@ -89,6 +89,10 @@ public class User {
         this.refreshToken = null;
     }
 
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
+
     // --- ENUM ---
 
     public enum Role {

@@ -18,6 +18,8 @@ import type {
   BoughtSnackDetailDTO,
   BoughtSnackListItemDTO,
 } from '@/types/bought-snack';
+import type { AdminUserListItem } from '@/types/admin';
+
 
 /**
  * plan.md 4-3 lib/request.ts 기준
@@ -208,3 +210,21 @@ export const postBscFeedback = (
   axiosInstance
     .post(`/bought-snacks/${bsId}/comments/${bscId}/feedback`, data)
     .then((res) => res.data);
+
+// --- 관리자 (ADMIN) ---
+
+export const getAdminUsers = (params: {
+  page: number;
+  size: number;
+}): Promise<ApiResponse<PagedData<AdminUserListItem>>> =>
+  axiosInstance.get('/admin/users', { params }).then((res) => res.data);
+
+export const patchAdminUserStatus = (
+  userId: number,
+  data: { status: 'ACTIVATED' | 'DEACTIVATED' }
+): Promise<ApiResponse<null>> =>
+  axiosInstance.patch(`/admin/users/${userId}/status`, data).then((res) => res.data);
+
+export const deleteAdminUser = (userId: number): Promise<ApiResponse<null>> =>
+  axiosInstance.delete(`/admin/users/${userId}`).then((res) => res.data);
+

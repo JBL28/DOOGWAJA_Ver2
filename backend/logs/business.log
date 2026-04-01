@@ -3,3 +3,11 @@
 [2026-04-01 15:25:25.748] [INFO ] [f4fc0764] [POST /api/auth/login] [http-nio-8080-exec-7] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
 [2026-04-01 15:25:33.801] [INFO ] [609e7db5] [POST /api/bought-snacks] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"bought_snack_created", "bsId":3, "name":"치즈버거"}
 [2026-04-01 15:29:40.160] [INFO ] [e63651da] [POST /api/auth/login] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:00:17.566] [INFO ] [1e132574] [POST /api/auth/login] [http-nio-8080-exec-9] BUSINESS_LOG - {"event":"login_success", "userId":2, "loginId":"user0208"}
+[2026-04-01 16:00:29.564] [INFO ] [fe30d2f8] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-2] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"IN_STOCK", "userId":2}
+[2026-04-01 16:00:31.630] [INFO ] [6211782d] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"OUT_OF_STOCK", "userId":2}
+[2026-04-01 16:00:33.129] [INFO ] [b8a6f63a] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-4] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"SHIPPING", "userId":2}
+[2026-04-01 16:00:34.063] [INFO ] [c6f4fa08] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-5] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"IN_STOCK", "userId":2}
+[2026-04-01 16:00:49.547] [INFO ] [d70af4f2] [POST /api/auth/login] [http-nio-8080-exec-5] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:01:12.849] [INFO ] [e165aa46] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-7] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"SHIPPING", "userId":1}
+[2026-04-01 16:01:14.277] [INFO ] [f305edc8] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-9] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"OUT_OF_STOCK", "userId":1}
