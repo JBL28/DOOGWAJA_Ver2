@@ -135,9 +135,14 @@ export default function EditBoughtSnackPage() {
         </div>
 
         <div className="card">
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <Link href="/" style={{ display: 'inline-block' }}>
+              <img src="/logo.svg" alt="Snack Overflow" className="logo-img" style={{ height: '2.2rem' }} />
+            </Link>
+          </div>
           <h1
-            className="heading-logo"
-            style={{ fontSize: '1.4rem', marginBottom: '0.3rem' }}
+            className="section-title"
+            style={{ fontSize: '1.3rem', marginBottom: '0.4rem', textAlign: 'center', borderBottom: 'none' }}
           >
             구매 과자 수정
           </h1>

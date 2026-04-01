@@ -11,3 +11,28 @@
 [2026-04-01 16:00:49.547] [INFO ] [d70af4f2] [POST /api/auth/login] [http-nio-8080-exec-5] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
 [2026-04-01 16:01:12.849] [INFO ] [e165aa46] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-7] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"SHIPPING", "userId":1}
 [2026-04-01 16:01:14.277] [INFO ] [f305edc8] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-9] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"OUT_OF_STOCK", "userId":1}
+[2026-04-01 16:17:00.460] [INFO ] [3e30765a] [POST /api/auth/login] [http-nio-8080-exec-5] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:17:46.163] [INFO ] [21d40edc] [POST /api/auth/login] [http-nio-8080-exec-2] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:17:49.116] [INFO ] [75c194cf] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-9] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"SHIPPING", "userId":1}
+[2026-04-01 16:17:50.493] [INFO ] [35b8ec59] [PATCH /api/bought-snacks/3/status] [http-nio-8080-exec-8] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":3, "newStatus":"IN_STOCK", "userId":1}
+[2026-04-01 16:20:32.841] [INFO ] [53455285] [POST /api/auth/login] [http-nio-8080-exec-8] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:21:59.751] [INFO ] [17b304d1] [POST /api/auth/login] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"login_success", "userId":2, "loginId":"user0208"}
+[2026-04-01 16:22:07.491] [INFO ] [8b549f7a] [POST /api/auth/login] [http-nio-8080-exec-2] BUSINESS_LOG - {"event":"login_success", "userId":2, "loginId":"user0208"}
+[2026-04-01 16:22:42.433] [INFO ] [f7be9ca6] [POST /api/auth/login] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"login_failed", "reason":"deleted_account", "loginId":"user0208"}
+[2026-04-01 16:22:52.231] [INFO ] [6bb07b27] [POST /api/auth/register] [http-nio-8080-exec-8] BUSINESS_LOG - {"event":"register_failed", "reason":"duplicate_login_id", "loginId":"user0208"}
+[2026-04-01 16:26:06.406] [INFO ] [34aed35f] [POST /api/auth/login] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:55:30.735] [INFO ] [68727862] [POST /api/auth/register] [http-nio-8080-exec-2] BUSINESS_LOG - {"event":"register_success", "loginId":"admin0208"}
+[2026-04-01 16:55:41.626] [INFO ] [680147ab] [POST /api/auth/register] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"register_success", "loginId":"user0208"}
+[2026-04-01 16:55:46.547] [INFO ] [905af612] [POST /api/auth/login] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 16:56:02.798] [INFO ] [e6125b15] [POST /api/auth/login] [http-nio-8080-exec-2] BUSINESS_LOG - {"event":"login_success", "userId":2, "loginId":"user0208"}
+[2026-04-01 16:56:54.666] [INFO ] [831f446e] [POST /api/auth/login] [http-nio-8080-exec-4] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 17:33:17.460] [INFO ] [e34d3784] [POST /api/auth/login] [http-nio-8080-exec-10] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 17:37:37.475] [INFO ] [17eac448] [POST /api/bought-snacks] [http-nio-8080-exec-1] BUSINESS_LOG - {"event":"bought_snack_created", "bsId":1, "name":"김"}
+[2026-04-01 17:39:55.867] [INFO ] [fb4952f0] [POST /api/auth/login] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"login_failed", "reason":"user_not_found", "loginId":"admin"}
+[2026-04-01 17:40:01.913] [INFO ] [1ace2131] [POST /api/auth/login] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"login_failed", "reason":"user_not_found", "loginId":"admin28"}
+[2026-04-01 17:40:19.769] [INFO ] [40f44294] [POST /api/auth/register] [http-nio-8080-exec-9] BUSINESS_LOG - {"event":"register_success", "loginId":"admin"}
+[2026-04-01 17:40:30.043] [INFO ] [5736d3d3] [POST /api/auth/register] [http-nio-8080-exec-1] BUSINESS_LOG - {"event":"register_success", "loginId":"user2"}
+[2026-04-01 17:40:35.231] [INFO ] [cb6278cd] [POST /api/auth/login] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin"}
+[2026-04-01 17:41:25.109] [INFO ] [4a2af17b] [POST /api/bought-snacks] [http-nio-8080-exec-2] BUSINESS_LOG - {"event":"bought_snack_created", "bsId":1, "name":"김"}
+[2026-04-01 17:42:34.324] [INFO ] [f4cfd804] [PATCH /api/bought-snacks/1/status] [http-nio-8080-exec-4] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":1, "newStatus":"IN_STOCK", "userId":1}
+[2026-04-01 17:42:35.308] [INFO ] [6e4fbe77] [PATCH /api/bought-snacks/1/status] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"bought_snack_status_updated", "bsId":1, "newStatus":"SHIPPING", "userId":1}

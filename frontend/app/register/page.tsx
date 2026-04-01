@@ -78,7 +78,9 @@ export default function RegisterPage() {
       <div className="card" style={{ width: '100%', maxWidth: 420 }}>
         {/* 헤더 */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 className="heading-logo">🍪 두과자</h1>
+          <Link href="/" style={{ display: 'inline-block' }}>
+            <img src="/logo.svg" alt="Snack Overflow" className="logo-img" style={{ height: '2.8rem' }} />
+          </Link>
           <p className="heading-sub">회원가입</p>
         </div>
 

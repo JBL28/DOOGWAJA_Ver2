@@ -27,6 +27,7 @@ import dev.ssafy.bs_comment.dto.BsCommentUpdateRequest;
 import dev.ssafy.bs_comment.service.BsCommentService;
 import dev.ssafy.bs_feedback.service.BsFeedbackService;
 import dev.ssafy.bsc_feedback.service.BscFeedbackService;
+import dev.ssafy.common.dto.LikedUsersResponseDTO;
 import dev.ssafy.common.ApiResponse;
 import dev.ssafy.common.PageResponse;
 import dev.ssafy.rc_comment.dto.CommentItemDTO;
@@ -206,6 +207,15 @@ public class BoughtSnackController {
         FeedbackResultDTO result = bsFeedbackService.toggleFeedback(
                 bsId, request, userDetails.getUserId(), userDetails.getUser().getRole());
         return ResponseEntity.ok(ApiResponse.success(result, "피드백이 반영되었습니다."));
+    }
+
+    /**
+     * 구매 과자 좋아요 표시한 유저 목록 조회
+     */
+    @GetMapping("/{bsId}/likes")
+    public ResponseEntity<ApiResponse<LikedUsersResponseDTO>> getLikedUsers(@PathVariable Long bsId) {
+        LikedUsersResponseDTO result = bsFeedbackService.getLikedUsers(bsId);
+        return ResponseEntity.ok(ApiResponse.success(result, "좋아요 표시한 유저 목록을 조회했습니다."));
     }
 
     /**

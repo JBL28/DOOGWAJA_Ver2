@@ -9,11 +9,15 @@ import dev.ssafy.recommendation.entity.Recommendation;
 import dev.ssafy.recommendation.repository.RecommendationRepository;
 import dev.ssafy.user.entity.User;
 import dev.ssafy.user.repository.UserRepository;
+import dev.ssafy.common.dto.LikedUsersResponseDTO;
+import dev.ssafy.user.dto.UserNicknameDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * plan.md RF-1 기준
@@ -78,6 +82,22 @@ public class RcFeedbackService {
         long dislikeCount = rcFeedbackRepository.countByRecommendationAndStatus(recommendation, RcFeedback.FeedbackStatus.DISLIKE);
 
         return new FeedbackResultDTO(myFeedback, likeCount, dislikeCount);
+    }
+
+    public LikedUsersResponseDTO getLikedUsers(Long rcId) {
+        Recommendation recommendation = recommendationRepository.findById(rcId)
+                .orElseThrow(() -> new EntityNotFoundException("추천 게시글을 찾을 수 없습니다."));
+
+        List<RcFeedback> feedbacks = rcFeedbackRepository.findTop21ByRecommendationAndStatusOrderByIdDesc(
+                recommendation, RcFeedback.FeedbackStatus.LIKE);
+
+        boolean hasMore = feedbacks.size() > 20;
+        List<UserNicknameDTO> users = feedbacks.stream()
+                .limit(20)
+                .map(f -> new UserNicknameDTO(f.getUser().getUserId(), f.getUser().getNickname()))
+                .collect(Collectors.toList());
+
+        return new LikedUsersResponseDTO(users, hasMore);
     }
 
     private RcFeedback.FeedbackStatus parseStatus(String status) {

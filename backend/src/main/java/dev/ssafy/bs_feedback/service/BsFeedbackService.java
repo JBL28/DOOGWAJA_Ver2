@@ -9,11 +9,15 @@ import dev.ssafy.rc_feedback.dto.FeedbackRequest;
 import dev.ssafy.rc_feedback.dto.FeedbackResultDTO;
 import dev.ssafy.user.entity.User;
 import dev.ssafy.user.repository.UserRepository;
+import dev.ssafy.common.dto.LikedUsersResponseDTO;
+import dev.ssafy.user.dto.UserNicknameDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +67,22 @@ public class BsFeedbackService {
         long dislikeCount = bsFeedbackRepository.countByBoughtSnackAndStatus(boughtSnack, BsFeedback.FeedbackStatus.DISLIKE);
 
         return new FeedbackResultDTO(myFeedback, likeCount, dislikeCount);
+    }
+
+    public LikedUsersResponseDTO getLikedUsers(Long bsId) {
+        BoughtSnack boughtSnack = boughtSnackRepository.findById(bsId)
+                .orElseThrow(() -> new EntityNotFoundException("구매 과자를 찾을 수 없습니다."));
+
+        List<BsFeedback> feedbacks = bsFeedbackRepository.findTop21ByBoughtSnackAndStatusOrderByIdDesc(
+                boughtSnack, BsFeedback.FeedbackStatus.LIKE);
+
+        boolean hasMore = feedbacks.size() > 20;
+        List<UserNicknameDTO> users = feedbacks.stream()
+                .limit(20)
+                .map(f -> new UserNicknameDTO(f.getUser().getUserId(), f.getUser().getNickname()))
+                .collect(Collectors.toList());
+
+        return new LikedUsersResponseDTO(users, hasMore);
     }
 
     private BsFeedback.FeedbackStatus parseStatus(String status) {

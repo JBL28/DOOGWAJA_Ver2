@@ -108,8 +108,10 @@ export default function AdminPage() {
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <div>
-            <h1 style={{ fontSize: '1.6rem', color: 'var(--brown-700)', fontWeight: 700 }}>어드민 시스템</h1>
-            <p style={{ color: 'var(--text-muted)' }}>전체 유저 관리 및 제어</p>
+            <Link href="/" style={{ display: 'inline-block' }}>
+              <img src="/logo.svg" alt="Snack Overflow" className="logo-img" style={{ height: '2.0rem' }} />
+            </Link>
+            <p style={{ color: 'var(--text-muted)', marginTop: '0.4rem' }}>전체 유저 관리 및 제어 (어드민 전용)</p>
           </div>
           <Link href="/" style={{ padding: '0.45rem 1rem', background: 'var(--brown-700)', color: 'white', borderRadius: '3px', textDecoration: 'none', fontSize: '0.9rem' }}>
             돌아가기

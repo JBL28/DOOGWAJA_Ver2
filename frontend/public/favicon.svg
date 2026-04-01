@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"> 
+  <defs> 
+    <style> 
+      .bar{fill:#D6A36E;stroke:#8B5E3C;stroke-width:4;rx:7;ry:7} 
+      .chip{fill:#4B2E16} 
+    </style> 
+  </defs> 
+
+  <g transform="translate(40, 37)"> 
+    <rect x="0" y="114" width="120" height="15" rx="6" fill="#D0D5DA"/> 
+    <rect x="0" y="84" width="15" height="40" rx="6" fill="#D0D5DA"/> 
+    <rect x="105" y="84" width="15" height="40" rx="6" fill="#D0D5DA"/>
+
+    <g>
+      <rect class="bar" x="20" y="96" width="78" height="14"/>
+      <circle class="chip" cx="42" cy="103" r="3.2"/><circle class="chip" cx="77" cy="103" r="3"/>
+    </g>
+
+    <g transform="translate(5, -36) rotate(15 20 97)">
+      <rect class="bar" x="20" y="96" width="78" height="14"/>
+      <circle class="chip" cx="42" cy="103" r="3.2"/><circle class="chip" cx="77" cy="103" r="3"/>
+    </g>
+
+    <g transform="translate(15, -70) rotate(30 20 97)">
+      <rect class="bar" x="20" y="96" width="78" height="14"/>
+      <circle class="chip" cx="42" cy="103" r="3.2"/><circle class="chip" cx="77" cy="103" r="3"/>
+    </g>
+
+    <g transform="translate(35, -100) rotate(45 20 97)">
+      <rect class="bar" x="20" y="96" width="78" height="14"/>
+      <circle class="chip" cx="42" cy="103" r="3.2"/><circle class="chip" cx="77" cy="103" r="3"/>
+    </g>
+  </g> 
+</svg>

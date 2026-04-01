@@ -24,4 +24,9 @@ public interface BsFeedbackRepository extends JpaRepository<BsFeedback, Long> {
      * 과자 삭제 시 cascade용
      */
     List<BsFeedback> findAllByBoughtSnack(BoughtSnack boughtSnack);
+
+    /**
+     * 좋아요 표시한 유저 목록 조회 (Top 21)
+     */
+    List<BsFeedback> findTop21ByBoughtSnackAndStatusOrderByIdDesc(BoughtSnack boughtSnack, BsFeedback.FeedbackStatus status);
 }

@@ -1,131 +1,61 @@
-# 관리자 도메인 (어드민 페이지) 구현 계획
+# Implementation Plan - 좋아요 표시한 사람 목록 조회 기능
 
-이 계획은 `shared/requirements.md`, `shared/IMPLEMENTATION_POLICY.md`, `shared/api_spec.md`를 바탕으로 작성된 백엔드/프론트엔드 관리자 도메인(유저 목록, 유저 상태 변경, 유저 삭제)의 구현 지침입니다.
+본 계획은 사용자가 게시글(추천글, 구매 과자)의 좋아요 수를 클릭하거나 마우스를 올렸을 때, 해당 글에 좋아요를 표시한 사용자 목록을 최대 20명까지 보여주는 기능을 추가하는 것을 목표로 합니다.
 
-## 1. 전체 유저 목록 조회 기능
-### 작업명
-전체 유저 목록 조회 파이프라인(API 및 페이지) 구축
+## User Review Required
 
-### 목표
-관리자(ADMIN)가 서비스에 가입한 모든 계정의 목록을 확인하고, 이를 10개씩 페이지네이션 형태로 조회할 수 있도록 한다.
+> [!IMPORTANT]
+> - **최대 노출 수**: 20명으로 제한하며, 초과 시 `...` 또는 `외 N명` 등으로 표시합니다.
+> - **노출 시점**: 현재 메인 페이지에서 '👍' 아이콘이나 숫자 근처에 마우스 오버 시 정보를 가져와 보여주는 방식을 제안합니다.
+> - **개인정보**: 현재 시스템의 `User.nickname` 필드를 노출합니다.
 
-### 근거 문서
-- `requirements.md` (관리자 권한: 회원 관리 가능)
-- `IMPLEMENTATION_POLICY.md` (2-2 권한 매트릭스)
-- `api_spec.md` (11-1 전체 유저 목록 조회)
+## Proposed Changes
 
-### 선행 조건
-- 백엔드에 `/api/admin` 엔드포인트를 처리할 `AdminController` 등의 뼈대 및 `ADMIN` 인가 권한 설정 완료
+### [Backend]
 
-### 작업 범위
-- **백엔드**: `GET /api/admin/users` 엔드포인트 구현 (JPA Pageable 활용을 통한 페이지네이션 로직 포함)
-- **프론트엔드**: 어드민 페이지(`/admin` 등) 내 유저 목록 렌더링용 테이블/리스트 UI 및 페이지네이션 제어 컴포넌트 연동
+#### [NEW] [LikedUsersResponseDTO.java](file:///c:/Users/SSAFY/lab/DOGWAJA/backend/src/main/java/dev/ssafy/common/dto/LikedUsersResponseDTO.java)
+- 좋아요 누른 유저 목록과 초과 여부를 담는 공통 DTO
+- `List<UserNicknameDTO> users`
+- `boolean hasMore`
 
-### 제외 범위
-- 요구사항에 명시되지 않은 목록 필터링 조건 추가, 유저 아이디 검색, 별도의 커스텀 정렬 기능. (본래 정해진 pagination 설정만 준수)
+#### [NEW] [UserNicknameDTO.java](file:///c:/Users/SSAFY/lab/DOGWAJA/backend/src/main/java/dev/ssafy/user/dto/UserNicknameDTO.java)
+- 최소한의 유저 정보(ID, 닉네임)만 담는 DTO
 
-### 세부 정책
-- 권한: 오직 `ADMIN` 역할을 가진 사용자만 접근 가능.
-- 응답 구조: `page`(0-indexed)와 `size`(기본 10) 파라미터를 사용하여 `userId`, `loginId`, `nickname`, `role`, `status`, `createdAt` 데이터 포함.
+#### [MODIFY] [RcFeedbackRepository.java](file:///c:/Users/SSAFY/lab/DOGWAJA/backend/src/main/java/dev/ssafy/rc_feedback/repository/RcFeedbackRepository.java)
+- `findTop21ByRecommendationAndStatusOrderByCreatedAtDesc` 추가
 
-### 완료 조건
-- 관리자 토큰으로 `GET /api/admin/users?page=0&size=10` 호출 시 유저 목록이 200 OK와 함께 페이지네이션 구조로 정확히 반환된다.
-- USER 토큰이나 인증되지 않은 사용자가 해당 경로 요청 시 `401` 또는 `403` 응답이 발생한다.
-- 프론트엔드 화면 상에서 전체 유저의 내역이 목록 형태로 정상 노출되며, 10개 단위로 페이지 이동이 문제없이 동작한다.
+#### [MODIFY] [BsFeedbackRepository.java](file:///c:/Users/SSAFY/lab/DOGWAJA/backend/src/main/java/dev/ssafy/bs_feedback/repository/BsFeedbackRepository.java)
+- `findTop21ByBoughtSnackAndStatusOrderByCreatedAtDesc` 추가
 
-### 미정 사항
-- 관리자 도메인 페이지(`/admin`)로 향하는 **사용자 진입점(Entry Point, 예: 내비게이션 바 링크 등)의 위치**가 화면 설계(requirements.md의 필요 페이지 목록 5가지)에 명시되어 있지 않음. (직접 URL 타이핑 등을 염두에 둔 것인지, 메뉴에 넣을지 별도 협의/확인 필요)
+#### [MODIFY] [RecommendationController.java](file:///c:/Users/SSAFY/lab/DOGWAJA/backend/src/main/java/dev/ssafy/recommendation/controller/RecommendationController.java)
+- `GET /api/recommendations/{rcId}/likes` 엔드포인트 추가
 
-### generator 전달 메모
-- 검색/필터 등 문서에 없는 추가 기능은 "관리 편의성"이라는 이유로 임의 판단하여 추가하지 말 것.
-- 페이징 파라미터가 없어도 기본 동작으로 `page=0`, `size=10`을 무조건 사용하도록 설정할 것.
+#### [MODIFY] [BoughtSnackController.java](file:///c:/Users/SSAFY/lab/DOGWAJA/backend/src/main/java/dev/ssafy/bought_snack/controller/BoughtSnackController.java)
+- `GET /api/bought-snacks/{bsId}/likes` 엔드포인트 추가
 
-### tester 전달 메모
-- ADMIN 토큰 외의 접근에 대해 403이 정상 발동하는지에 대한 경계값/권한 테스트 및 `first`, `last`, `totalPages` 등 페이지네이션 응답 검증을 반드시 포함할 것.
+### [Frontend]
 
----
+#### [MODIFY] [types/recommendation.ts](file:///c:/Users/SSAFY/lab/DOGWAJA/frontend/types/recommendation.ts)
+- `LikedUsersResponseDTO` 인터페이스 정의
 
-## 2. 유저 상태 변경 기능
-### 작업명
-계정 상태(ACTIVATED / DEACTIVATED) 변경 처리 기능 구현
+#### [MODIFY] [lib/request.ts](file:///c:/Users/SSAFY/lab/DOGWAJA/frontend/lib/request.ts)
+- `getRecommendationLikes(rcId)` API 함수 추가
+- `getBoughtSnackLikes(bsId)` API 함수 추가
 
-### 목표
-관리자가 특정 유저의 서비스 이용 상태(`ACTIVATED`, `DEACTIVATED`)를 토글 또는 선택하여 제한/허용할 수 있게 한다.
+#### [MODIFY] [app/page.tsx](file:///c:/Users/SSAFY/lab/DOGWAJA/frontend/app/page.tsx)
+- 각 카드 컴포넌트에 좋아요 목록 상태(`likedUsersMap`) 추가
+- 👍 버튼 근처에 마우스 오버 시 목록을 비동기로 로드
+- 20명 초과 시 `...` 표시 로직 구현
 
-### 근거 문서
-- `requirements.md` (회원관리: 활성화/비활성화 지정)
-- `IMPLEMENTATION_POLICY.md` (3-3 계정 상태 정책)
-- `api_spec.md` (11-2 유저 상태 변경)
+## Open Questions
 
-### 선행 조건
-- 1번 "전체 유저 목록 조회 기능" 작업의 완전한 선행 구현 (프론트/백엔드 전부)
+- **UI 형태**: 단순 툴팁(Tooltip) 형태가 좋을까요, 아니면 클릭 시 작은 팝업(Pop-over) 형태가 좋을까요? (현재는 툴팁 방식을 제안합니다.)
 
-### 작업 범위
-- **백엔드**: `PATCH /api/admin/users/{userId}/status` 엔드포인트 도메인 로직 구현
-- **프론트엔드**: 유저 목록 각 행에 `상태 변경` 버튼 혹은 드롭다운 제공, 그리고 상태 변경 후 API 재호출 또는 화면 내 상태 데이터 동기화
+## Verification Plan
 
-### 제외 범위
-- 이 API를 통한 `status = DELETED` (삭제) 상태로의 인위적인 전이 금지 (삭제는 삭제 전용 API에서만 수행).
+### Automated Tests
+- Backend: JUnit을 사용하여 20명 이하/초과 시 `hasMore` 값이 정확히 반환되는지 테스트.
+- Frontend: Vitest를 사용하여 데이터 수신에 따른 `...` 표시 여부 로직 검증.
 
-### 세부 정책
-- 권한: `ADMIN` 전용.
-- 요청 본문에 허용하는 `status` 값: `ACTIVATED`, `DEACTIVATED` 단 두 가지로 엄격히 제한.
-- `DELETED` 상태의 유저를 `ACTIVATED` 등으로 되돌리는 행위에 대한 명시적 정책이 없으나, 일반적인 소프트 삭제 복구 불가 정책을 따르거나 혹은 빈틈없는 검증으로 방어할 것.
-
-### 완료 조건
-- 관리자가 유저 상태를 대상으로 API 호출 시 DB 상태가 정상적으로 반영되며, 200 OK 반환.
-- `status` 요청값을 `DELETED` 혹은 정의되지 않은 문자열로 지정 전송 시 서버에서 `400 Bad Request`가 정확히 반환된다.
-- 프론트엔드에서 성공적으로 호출된 후, 화면 내 유저의 상태값이 새로 갱신되어 표기된다.
-
-### 미정 사항
-- 이미 `DELETED` (탈퇴/삭제) 처리된 유저를 어드민에 의해 강제로 `ACTIVATED`/`DEACTIVATED` 상태로 다시 복구할 수 있는지에 대한 정책이 없음. (기본적으로는 소프트 딜리트인 이상 복구가 가능한 것처럼 보이나, 기획적 판단 필요)
-
-### generator 전달 메모
-- 상태값이 enum 형식인 경우 요청 Body Validation이 느슨해져서 에러처리를 500에 맡기는 경우가 없도록 `HttpMessageNotReadableException` 등에 대한 Global 처리나 DTO Validation을 단단히 확인할 것.
-
-### tester 전달 메모
-- 없는 유저 식별자(`userId`)를 전송했을 때 안전하게 404가 등장하는지와 `status : "INVALID"`를 전송했을 때 안전하게 400이 등장하는지 철저히 테스트.
-
----
-
-## 3. 유저 삭제 (소프트 삭제) 기능
-### 작업명
-계정 영구 이용정지 및 삭제 (Soft Delete) 처리 기능
-
-### 목표
-관리자가 규정 위반 등 문제가 있는 유저를 실제 DB Row를 영구 삭제(Hard Delete)하지 않으면서, 상태값만 `DELETED`로 변경하여 영구적인 이용 불가 조치를 내린다.
-
-### 근거 문서
-- `requirements.md` (가입한 계정을 관리할 수 있다. 삭제 기능)
-- `IMPLEMENTATION_POLICY.md` (10-1 유저 탈퇴/관리자 삭제 정책, 10-2 탈퇴 유저 기존 데이터 처리, 10-3 기능 표시 정책)
-- `api_spec.md` (11-3 유저 삭제)
-
-### 선행 조건
-- 1번 전체 유저 목록 조회 기능에서 유저 목록을 렌더링 성공.
-
-### 작업 범위
-- **백엔드**: `DELETE /api/admin/users/{userId}` 엔드포인트 도메인 로직 및 데이터 변경 로직
-- **프론트엔드**: 유저 목록 UI 내에 '삭제' 전용 액션 버튼 배치, 오작동 방지를 위한 확인/컨펌 창 제공(추천), 완료 시 리스트 내 상태 표기를 `DELETED`로 바꾸어 반영.
-
-### 제외 범위
-- 유저 삭제 시, 대상 회원이 기존에 남긴 과자 추천글, 댓글, 피드백 등 **이전의 연결된 활동 데이터에 대한 CASCADE 등 자동 삭제 연동 일체 금지**. (10-2 정책)
-- 화면 상에서 해당 유저의 닉네임을 '(알 수 없음)' 등으로 임의 익명화 하는 기능 금지. (10-3 정책)
-- 실제 데이터베이스 테이블에서의 `DELETE Query` 사용(Hard delete) 금지.
-
-### 세부 정책
-- 권한: `ADMIN` 전용.
-- 백엔드에서 사용자 상태 필드 값을 `status = DELETED`로 업데이트하는 로직만 수행하도록 엄격히 분리 설정.
-
-### 완료 조건
-- 삭제 전용 API 호출 시 DB 상에서 해당 사용자의 `status` 컬럼만 `DELETED`로 정상 기록되며 200 반환.
-- 삭제된 사용자가 작성했던 이전 댓글 및 추천글 데이터가 타 API 목록에서 사라지지 않고 이전 닉네임대로 변함없이 노출된다.
-- 강제 삭제/탈퇴 처리된 유저가 `POST /api/auth/login` 등으로 로그인 시도시 `403 Forbidden` 등을 정상적으로 반환받고 접속이 차단된다.
-
-### 미정 사항
-- 딱히 존재하지 않음 (대부분의 관련 제약사항이 IMPLEMENTATION_POLICY에 상세 규정됨).
-
-### generator 전달 메모
-- 유저 `User` Entity 내부나 데이터베이스 스키마 층위에 설정된 영속성 전이(CASCADE) 제약으로 인해, `User`의 상태를 바꿨을 뿐인데 다른 모듈이 영향을 받지 않도록 JPA 상태 변경 로직을 순수 Update 성격으로 방어할 것.
-
-### tester 전달 메모
-- 사용자 삭제 처리를 진행한 뒤, 1) 해당 유저의 예전 게시글이 여전히 정상 조회되는지 2) 해당 대상 유저 계정에 대해 다시 로그인 시도시 403이 정상 발생하는지를 통합 테스트.
+### Manual Verification
+- 21명 이상의 더미 데이터를 넣고 메인 페이지에서 정상적으로 `...`이 출력되는지 확인.

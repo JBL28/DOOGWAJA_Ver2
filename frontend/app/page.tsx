@@ -17,7 +17,9 @@ import {
   getBoughtSnacks,
   postBsFeedback,
   deleteBoughtSnack,
-  patchBoughtSnackStatus
+  patchBoughtSnackStatus,
+  getRecommendationLikes,
+  getBoughtSnackLikes
 } from '@/lib/request';
 import { initAuthState } from '@/lib/initAuth';
 import type {
@@ -29,6 +31,7 @@ import type {
   BoughtSnackListItemDTO,
 } from '@/types/bought-snack';
 import CommentSection from '@/components/CommentSection';
+import LikeTooltip from '@/components/LikeTooltip';
 
 type TabType = 'RECOMMEND' | 'BOUGHT';
 
@@ -205,8 +208,10 @@ export default function HomePage() {
         {/* 헤더 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
-            <h1 className="heading-logo" style={{ textAlign: 'left', fontSize: '1.6rem' }}>🍪 두과자</h1>
-            <p className="heading-sub" style={{ textAlign: 'left' }}>간식 추천 및 구매 현황</p>
+            <Link href="/" style={{ display: 'inline-block' }}>
+              <img src="/logo.svg" alt="Snack Overflow" className="logo-img" style={{ height: '2.2rem' }} />
+            </Link>
+            <p className="heading-sub" style={{ textAlign: 'left', marginTop: '0.4rem' }}>우리 반 간식 공유 서비스</p>
           </div>
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
             {user && (
@@ -316,9 +321,14 @@ export default function HomePage() {
                     </div>
                     <hr style={{ border: 'none', borderTop: '1px solid var(--brown-100)', margin: '0 0 1rem 0' }} />
                     <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1rem', alignItems: 'center' }}>
-                      <button onClick={() => handleRcFeedback(rc.rcId, 'LIKE')} style={{ padding: '0.3rem 0.7rem', borderRadius: '20px', border: '1.5px solid', borderColor: rc.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-500)' : 'var(--brown-100)', background: rc.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-100)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem', color: rc.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-700)' : 'var(--text-muted)' }}>
-                        👍 {rc.feedbackSummary.likeCount}
-                      </button>
+                      <LikeTooltip
+                        likedCount={rc.feedbackSummary.likeCount}
+                        onFetch={() => getRecommendationLikes(rc.rcId)}
+                      >
+                        <button onClick={() => handleRcFeedback(rc.rcId, 'LIKE')} style={{ padding: '0.3rem 0.7rem', borderRadius: '20px', border: '1.5px solid', borderColor: rc.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-500)' : 'var(--brown-100)', background: rc.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-100)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem', color: rc.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-700)' : 'var(--text-muted)' }}>
+                          👍 {rc.feedbackSummary.likeCount}
+                        </button>
+                      </LikeTooltip>
                       <button onClick={() => handleRcFeedback(rc.rcId, 'DISLIKE')} style={{ padding: '0.3rem 0.7rem', borderRadius: '20px', border: '1.5px solid', borderColor: rc.feedbackSummary.myFeedback === 'DISLIKE' ? 'var(--error)' : 'var(--brown-100)', background: rc.feedbackSummary.myFeedback === 'DISLIKE' ? 'rgba(192,57,43,0.08)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem', color: rc.feedbackSummary.myFeedback === 'DISLIKE' ? 'var(--error)' : 'var(--text-muted)' }}>
                         👎 {rc.feedbackSummary.dislikeCount}
                       </button>
@@ -406,9 +416,14 @@ export default function HomePage() {
                   </div>
                   <hr style={{ border: 'none', borderTop: '1px solid var(--brown-100)', margin: '0 0 1rem 0' }} />
                   <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1rem', alignItems: 'center' }}>
-                    <button onClick={() => handleBsFeedback(bs.bsId, 'LIKE')} style={{ padding: '0.3rem 0.7rem', borderRadius: '20px', border: '1.5px solid', borderColor: bs.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-500)' : 'var(--brown-100)', background: bs.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-100)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem', color: bs.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-700)' : 'var(--text-muted)' }}>
-                      😍 맛있어요 {bs.feedbackSummary.likeCount}
-                    </button>
+                    <LikeTooltip
+                      likedCount={bs.feedbackSummary.likeCount}
+                      onFetch={() => getBoughtSnackLikes(bs.bsId)}
+                    >
+                      <button onClick={() => handleBsFeedback(bs.bsId, 'LIKE')} style={{ padding: '0.3rem 0.7rem', borderRadius: '20px', border: '1.5px solid', borderColor: bs.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-500)' : 'var(--brown-100)', background: bs.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-100)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem', color: bs.feedbackSummary.myFeedback === 'LIKE' ? 'var(--brown-700)' : 'var(--text-muted)' }}>
+                        😍 맛있어요 {bs.feedbackSummary.likeCount}
+                      </button>
+                    </LikeTooltip>
                     <button onClick={() => handleBsFeedback(bs.bsId, 'DISLIKE')} style={{ padding: '0.3rem 0.7rem', borderRadius: '20px', border: '1.5px solid', borderColor: bs.feedbackSummary.myFeedback === 'DISLIKE' ? 'var(--error)' : 'var(--brown-100)', background: bs.feedbackSummary.myFeedback === 'DISLIKE' ? 'rgba(192,57,43,0.08)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem', color: bs.feedbackSummary.myFeedback === 'DISLIKE' ? 'var(--error)' : 'var(--text-muted)' }}>
                       🤔 별로에요 {bs.feedbackSummary.dislikeCount}
                     </button>

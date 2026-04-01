@@ -22,7 +22,7 @@
 
 :root {
   /* 메인 아이보리 팔레트 */
-  --ivory-50:  #fdfbf7;
+  --ivory-50: #fdfbf7;
   --ivory-100: #f8f3e8;
   --ivory-200: #f0e8d4;
   --ivory-300: #e4d5b7;
@@ -57,13 +57,16 @@
 }
 
 /* ---- 기본 리셋 ---- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -106,7 +109,7 @@ body::before {
   box-shadow:
     0 2px 8px rgba(45, 26, 14, 0.08),
     0 0 0 1px rgba(180, 140, 100, 0.06),
-    inset 0 1px 0 rgba(255,255,255,0.6);
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
   position: relative;
 }
 
@@ -121,6 +124,7 @@ body::before {
   background: var(--brown-100);
   opacity: 0.6;
 }
+
 .card::after {
   content: '';
   position: absolute;
@@ -172,7 +176,7 @@ body::before {
   padding: 0.65rem 0.9rem;
   border: 1.5px solid var(--brown-100);
   border-radius: 3px;
-  background: rgba(255,255,255,0.7);
+  background: rgba(255, 255, 255, 0.7);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 0.93rem;
@@ -188,7 +192,7 @@ body::before {
 .form-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(196, 163, 114, 0.15);
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .form-error {
@@ -328,6 +332,7 @@ body::before {
   .card {
     padding: 1.8rem 1.4rem;
   }
+
   .heading-logo {
     font-size: 1.6rem;
   }

@@ -65,7 +65,9 @@ export default function LoginPage() {
       <div className="card" style={{ width: '100%', maxWidth: 400 }}>
         {/* 헤더 */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 className="heading-logo">🍪 두과자</h1>
+          <Link href="/" style={{ display: 'inline-block' }}>
+            <img src="/logo.svg" alt="Snack Overflow" className="logo-img" style={{ height: '2.8rem' }} />
+          </Link>
           <p className="heading-sub">우리 반 간식 공유 서비스</p>
         </div>
 

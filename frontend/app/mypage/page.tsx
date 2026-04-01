@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getMe, putMe, deleteMe, postLogout } from '@/lib/request';
 import { useAuthStore } from '@/store/authStore';
 import { initAuthState } from '@/lib/initAuth';
@@ -168,7 +169,10 @@ export default function MyPage() {
       <div className="card" style={{ width: '100%', maxWidth: 480 }}>
         {/* 헤더 */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 className="heading-logo">🍪 내 정보</h1>
+          <Link href="/" style={{ display: 'inline-block' }}>
+            <img src="/logo.svg" alt="Snack Overflow" className="logo-img" style={{ height: '2.5rem' }} />
+          </Link>
+          <h1 className="section-title" style={{ marginTop: '1.2rem', borderBottom: 'none', fontSize: '1.3rem' }}>내 정보</h1>
           {userData && (
             <p className="heading-sub">{userData.loginId} · {userData.role}</p>
           )}

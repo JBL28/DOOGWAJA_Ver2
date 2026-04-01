@@ -54,3 +54,16 @@ export interface PagedData<T> {
   first: boolean;
   last: boolean;
 }
+
+/**
+ * 좋아요 표시한 유저 목록 응답
+ */
+export interface LikedUserDTO {
+  userId: number;
+  nickname: string;
+}
+
+export interface LikedUsersResponseDTO {
+  users: LikedUserDTO[];
+  hasMore: boolean;
+}

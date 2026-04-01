@@ -16,6 +16,7 @@ import dev.ssafy.recommendation.dto.RecommendationListItemDTO;
 import dev.ssafy.recommendation.dto.RecommendationUpdateRequest;
 import dev.ssafy.recommendation.service.RecommendationService;
 import dev.ssafy.security.CustomUserDetails;
+import dev.ssafy.common.dto.LikedUsersResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -194,6 +195,15 @@ public class RecommendationController {
         FeedbackResultDTO result = rcFeedbackService.toggleFeedback(
                 rcId, request, userDetails.getUserId(), userDetails.getUser().getRole());
         return ResponseEntity.ok(ApiResponse.success(result, "피드백이 처리되었습니다."));
+    }
+
+    /**
+     * 추천글 좋아요 표시한 유저 목록 조회
+     */
+    @GetMapping("/{rcId}/likes")
+    public ResponseEntity<ApiResponse<LikedUsersResponseDTO>> getLikedUsers(@PathVariable Long rcId) {
+        LikedUsersResponseDTO result = rcFeedbackService.getLikedUsers(rcId);
+        return ResponseEntity.ok(ApiResponse.success(result, "좋아요 표시한 유저 목록을 조회했습니다."));
     }
 
     /**

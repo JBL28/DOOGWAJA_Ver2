@@ -27,4 +27,9 @@ public interface RcFeedbackRepository extends JpaRepository<RcFeedback, Long> {
      * 추천글 삭제 시 cascade용
      */
     List<RcFeedback> findAllByRecommendation(Recommendation recommendation);
+
+    /**
+     * 좋아요 표시한 유저 목록 조회 (Top 21)
+     */
+    List<RcFeedback> findTop21ByRecommendationAndStatusOrderByIdDesc(Recommendation recommendation, RcFeedback.FeedbackStatus status);
 }

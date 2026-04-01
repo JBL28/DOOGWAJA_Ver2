@@ -10,6 +10,7 @@ import type {
 import type {
   CommentItemDTO,
   FeedbackResultDTO,
+  LikedUsersResponseDTO,
   PagedData,
   RecommendationDetailDTO,
   RecommendationListItemDTO,
@@ -118,6 +119,11 @@ export const postRcFeedback = (
 ): Promise<ApiResponse<FeedbackResultDTO>> =>
   axiosInstance.post(`/recommendations/${rcId}/feedback`, data).then((res) => res.data);
 
+export const getRecommendationLikes = (
+  rcId: number
+): Promise<ApiResponse<LikedUsersResponseDTO>> =>
+  axiosInstance.get(`/recommendations/${rcId}/likes`).then((res) => res.data);
+
 // --- 추천 댓글 피드백 ---
 
 export const postRccFeedback = (
@@ -199,6 +205,11 @@ export const postBsFeedback = (
   data: { status: 'LIKE' | 'DISLIKE' }
 ): Promise<ApiResponse<FeedbackResultDTO>> =>
   axiosInstance.post(`/bought-snacks/${bsId}/feedback`, data).then((res) => res.data);
+
+export const getBoughtSnackLikes = (
+  bsId: number
+): Promise<ApiResponse<LikedUsersResponseDTO>> =>
+  axiosInstance.get(`/bought-snacks/${bsId}/likes`).then((res) => res.data);
 
 // --- 구매 과자 댓글 피드백 ---
 
