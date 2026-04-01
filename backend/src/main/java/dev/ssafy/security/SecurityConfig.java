@@ -1,8 +1,7 @@
 package dev.ssafy.security;
 
-import dev.ssafy.auth.util.JwtProvider;
-import dev.ssafy.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,7 +17,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import dev.ssafy.auth.util.JwtProvider;
+import dev.ssafy.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 /**
  * plan.md 3-5 기준
