@@ -51,12 +51,12 @@ public class AuthController {
 
     /**
      * A-3. 로그아웃 — 200 OK (인증 필요)
-     * SecurityContext의 principal은 userId(Long)
+     * SecurityContext의 principal은 CustomUserDetails
      */
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(@AuthenticationPrincipal Long userId,
+    public ApiResponse<Void> logout(@AuthenticationPrincipal CustomUserDetails userDetails,
                                     HttpServletResponse response) {
-        authService.logout(userId, response);
+        authService.logout(userDetails.getUserId(), response);
         return ApiResponse.success(null, "로그아웃되었습니다.");
     }
 

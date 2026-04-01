@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * plan.md Phase 3 Step 10 기준
@@ -34,6 +36,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final CookieUtil cookieUtil;
 
+    private static final Logger BIZ_LOG = LoggerFactory.getLogger("BUSINESS_LOG");
+
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
@@ -44,6 +48,7 @@ public class AuthService {
     public void register(RegisterRequest request) {
         // loginId 중복 확인 → 중복 시 409
         if (userRepository.existsByLoginId(request.loginId())) {
+            BIZ_LOG.info("{\"event\":\"register_failed\", \"reason\":\"duplicate_login_id\", \"loginId\":\"{}\"}", request.loginId());
             throw new DuplicateLoginIdException("이미 사용 중인 아이디입니다.");
         }
 
@@ -56,6 +61,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+        BIZ_LOG.info("{\"event\":\"register_success\", \"loginId\":\"{}\"}", user.getLoginId());
     }
 
     /**
@@ -65,23 +71,31 @@ public class AuthService {
     public LoginResponse login(LoginRequest request, HttpServletResponse response) {
         // loginId로 유저 조회 → 없으면 401
         User user = userRepository.findByLoginId(request.loginId())
-                .orElseThrow(() -> new InvalidCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다."));
+                .orElseThrow(() -> {
+                    BIZ_LOG.info("{\"event\":\"login_failed\", \"reason\":\"user_not_found\", \"loginId\":\"{}\"}", request.loginId());
+                    return new InvalidCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
+                });
 
         // 계정 상태 확인 (비활성/탈퇴) → 403
         if (user.getStatus() == User.Status.DEACTIVATED) {
+            BIZ_LOG.info("{\"event\":\"login_failed\", \"reason\":\"deactivated_account\", \"loginId\":\"{}\"}", request.loginId());
             throw new AccountStatusException("비활성화된 계정입니다.");
         }
         if (user.getStatus() == User.Status.DELETED) {
+            BIZ_LOG.info("{\"event\":\"login_failed\", \"reason\":\"deleted_account\", \"loginId\":\"{}\"}", request.loginId());
             throw new AccountStatusException("탈퇴한 계정입니다.");
         }
 
         // 비밀번호 검증 → 불일치 시 401
         if (!passwordEncoder.matches(request.password(), user.getPasswordH())) {
+            BIZ_LOG.info("{\"event\":\"login_failed\", \"reason\":\"password_mismatch\", \"loginId\":\"{}\"}", request.loginId());
             throw new InvalidCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
         // 토큰 발급
         String accessToken = jwtProvider.generateAccessToken(user.getUserId(), user.getRole().name());
+        
+        BIZ_LOG.info("{\"event\":\"login_success\", \"userId\":{}, \"loginId\":\"{}\"}", user.getUserId(), user.getLoginId());
         String refreshToken = jwtProvider.generateRefreshToken(user.getUserId());
 
         // Refresh Token DB 저장

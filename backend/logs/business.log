@@ -1,0 +1,5 @@
+[2026-04-01 15:21:48.711] [INFO ] [240b783c] [POST /api/auth/login] [http-nio-8080-exec-5] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 15:23:42.276] [INFO ] [1e30044b] [POST /api/auth/login] [http-nio-8080-exec-4] BUSINESS_LOG - {"event":"login_success", "userId":2, "loginId":"user0208"}
+[2026-04-01 15:25:25.748] [INFO ] [f4fc0764] [POST /api/auth/login] [http-nio-8080-exec-7] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}
+[2026-04-01 15:25:33.801] [INFO ] [609e7db5] [POST /api/bought-snacks] [http-nio-8080-exec-3] BUSINESS_LOG - {"event":"bought_snack_created", "bsId":3, "name":"치즈버거"}
+[2026-04-01 15:29:40.160] [INFO ] [e63651da] [POST /api/auth/login] [http-nio-8080-exec-6] BUSINESS_LOG - {"event":"login_success", "userId":1, "loginId":"admin0208"}

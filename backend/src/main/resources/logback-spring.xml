@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- application.yml에 정의된 속성을 가져올 수 있음 -->
+    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="backend"/>
+
+    <!-- 마스킹 컨버터 등록 -->
+    <conversionRule conversionWord="mask" class="dev.ssafy.common.logging.MaskingConverter" />
+
+    <!-- 구조화된 로그 패턴: [시간] [레벨] [TraceID] [Method] [Path] [클래스] - [메시지] -->
+    <property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%X{traceId:-NO_TRACE}] [%X{requestMethod:-N/A} %X{requestUrl:-N/A}] [%t] %logger{36} - %mask%n%ex{full}"/>
+    <property name="LOG_DIR" value="./logs"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 1. 운영 로그 (application) -->
+    <appender name="FILE_APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/application-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 2. 에러 로그 (error) -->
+    <appender name="FILE_ERR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/error.log</file>
+        <!-- ERROR 및 WARN 레벨만 필터링 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/error-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 3. 비즈니스 로그 (business) -->
+    <!-- 특정 로거(BUSINESS_LOG)로 남기는 이벤트만 취합 -->
+    <appender name="FILE_BIZ" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/business.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/business-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- I/O 병목 방지를 위한 비동기 래핑 -->
+    <appender name="ASYNC_APP" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_APP" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <appender name="ASYNC_ERR" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_ERR" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <appender name="ASYNC_BIZ" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_BIZ" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- BUSINESS_LOG 전용 로거 설정 -->
+    <logger name="BUSINESS_LOG" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_BIZ" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- 환경별 로그 레벨 설정 -->
+    <springProfile name="dev | local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="ASYNC_APP" />
+            <appender-ref ref="ASYNC_ERR" />
+        </root>
+        <logger name="dev.ssafy" level="DEBUG" />
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="ASYNC_APP" />
+            <appender-ref ref="ASYNC_ERR" />
+        </root>
+        <logger name="dev.ssafy" level="INFO" />
+    </springProfile>
+
+    <!-- 프로필 미지정 시 기본 동작 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ASYNC_APP" />
+        <appender-ref ref="ASYNC_ERR" />
+    </root>
+
+</configuration>

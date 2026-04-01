@@ -2,20 +2,36 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getMe, putMe, deleteMe, postLogout, postRefresh } from '@/lib/request';
+import { getMe, putMe, deleteMe, postLogout } from '@/lib/request';
 import { useAuthStore } from '@/store/authStore';
+import { initAuthState } from '@/lib/initAuth';
 import type { UpdateUserRequest, UserData } from '@/types/auth';
 
 /**
  * plan.md 4-5 F-3 기준
- * - 인증되지 않은 사용자: /login으로 리다이렉트
- * - 닉네임 수정
- * - 비밀번호 변경
- * - 회원 탈퇴: 비밀번호 확인 후 → 로그아웃 → 메인 이동
+ *
+ * [인증 복구 정책] zustand-auth-recovery.md 준수
+ * - Zustand는 새로고침/URL 직접 입력 시 초기화된다.
+ * - accessToken이 없어도 즉시 /login으로 보내지 않는다.
+ * - postRefresh() → setAccessToken() → getMe() → setAuth() 순서로 완전 복구한다.
+ * - user 정보가 없으면 페이지에서 role 판단, UI 표시가 있는 페이지이므로 반드시 복구 필요
+ * - 공통 로직: lib/initAuth.ts의 initAuthState() 참조
  */
 export default function MyPage() {
   const router = useRouter();
-  const { accessToken, setAccessToken, clearAuth } = useAuthStore();
+  const { accessToken, user, setAuth, setAccessToken, clearAuth } = useAuthStore();
+
+  // 로그아웃
+  const handleLogout = async () => {
+    try {
+      await postLogout();
+    } catch {
+      // 서버 오류여도 클라이언트 상태 정리
+    } finally {
+      clearAuth();
+      router.push('/login');
+    }
+  };
 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,21 +55,17 @@ export default function MyPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // 인증 확인 및 유저 정보 로드
-  // 새로고침으로 Zustand가 초기화됐어도 Refresh Token 쿠키가 있으면 자동 복구
+  // [중요] lib/initAuth.ts의 initAuthState() 참조
+  // postRefresh() 후 getMe()까지 호출해 setAuth()로 완전한 인증 상태를 복구한다.
   useEffect(() => {
     const load = async () => {
       try {
-        // accessToken이 없으면 refresh 먼저 시도
-        if (!accessToken) {
-          const refreshRes = await postRefresh();
-          if (!refreshRes.success || !refreshRes.data?.accessToken) {
-            router.replace('/login');
-            return;
-          }
-          setAccessToken(refreshRes.data.accessToken);
+        const ok = await initAuthState({ accessToken, user, setAuth, setAccessToken, clearAuth });
+        if (!ok) {
+          router.replace('/login');
+          return;
         }
 
-        // 유저 정보 조회
         const meRes = await getMe();
         if (meRes.success) {
           setUserData(meRes.data);
@@ -160,6 +172,24 @@ export default function MyPage() {
           {userData && (
             <p className="heading-sub">{userData.loginId} · {userData.role}</p>
           )}
+          <button
+            id="btn-logout"
+            onClick={handleLogout}
+            style={{
+              marginTop: '0.8rem',
+              padding: '0.4rem 1.2rem',
+              background: 'none',
+              border: '1.5px solid var(--brown-200)',
+              borderRadius: '3px',
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.82rem',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+          >
+            로그아웃
+          </button>
         </div>
 
         {/* 닉네임 수정 */}

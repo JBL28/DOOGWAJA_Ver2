@@ -41,15 +41,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Long userId = Long.parseLong(claims.getSubject());
                 String role = claims.get("role", String.class);
 
-                // DB에서 사용자 상태 확인 없이 토큰 claims로 인증 처리
-                // (탈퇴/비활성 중간 처리는 로그인 시점에 검증)
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userId,
-                                null,
-                                List.of(new SimpleGrantedAuthority("ROLE_" + role))
-                        );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                User user = userRepository.findById(userId).orElse(null);
+                if (user != null) {
+                    CustomUserDetails userDetails = new CustomUserDetails(user);
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                            );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
 
